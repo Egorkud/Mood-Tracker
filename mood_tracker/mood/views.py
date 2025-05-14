@@ -1,8 +1,12 @@
+import random
+
+from django.contrib.auth.models import User
 from rest_framework import generics
 from rest_framework import viewsets, permissions
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 
+from .models import EmailVerificationCode
 from .models import MoodEntry
 from .serializers import EmailRequestSerializer, CodeVerificationSerializer
 from .serializers import MoodEntrySerializer
@@ -25,6 +29,21 @@ class MoodEntryViewSet(viewsets.ModelViewSet):
 
 class RequestCodeView(generics.CreateAPIView):
     serializer_class = EmailRequestSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        email = serializer.validated_data['email']
+        user, created = User.objects.get_or_create(username=email, email=email)
+        code = str(random.randint(100000, 999999))
+
+        EmailVerificationCode.objects.update_or_create(user=user, defaults={'code': code})
+
+        # Поки що просто виводимо код у консоль
+        print(f"[DEBUG] Verification code for {email}: {code}")
+
+        return Response({"message": "Verification code sent successfully."})
 
 
 class VerifyCodeView(generics.CreateAPIView):
