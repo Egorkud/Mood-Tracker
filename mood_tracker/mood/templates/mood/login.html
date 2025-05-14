@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Вхід — Mood Tracker</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #f5f5f5; }
+        .login-box { max-width: 400px; margin: auto; padding: 2rem; background: white; margin-top: 100px; border-radius: 1rem; }
+    </style>
+</head>
+<body>
+<div class="login-box shadow">
+    <h3 class="text-center mb-4">Вхід до Mood Tracker</h3>
+
+    <div id="step-email">
+        <label for="email" class="form-label">Ваша електронна пошта:</label>
+        <input type="email" id="email" class="form-control mb-3" placeholder="you@example.com">
+        <button class="btn btn-primary w-100" onclick="requestCode()">Надіслати код</button>
+    </div>
+
+    <div id="step-code" style="display: none;">
+        <label for="code" class="form-label">Код з пошти:</label>
+        <input type="text" id="code" class="form-control mb-3">
+        <button class="btn btn-success w-100" onclick="verifyCode()">Увійти</button>
+    </div>
+
+    <div id="message" class="mt-3 text-center text-danger"></div>
+</div>
+
+<script>
+    async function requestCode() {
+        const email = document.getElementById('email').value;
+        const res = await fetch('/api/auth/request-code/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email })
+        });
+
+        if (res.ok) {
+            document.getElementById('step-email').style.display = 'none';
+            document.getElementById('step-code').style.display = 'block';
+            document.getElementById('message').textContent = "Код надіслано на пошту!";
+        } else {
+            document.getElementById('message').textContent = "Помилка. Спробуйте ще раз.";
+        }
+    }
+
+    async function verifyCode() {
+        const email = document.getElementById('email').value;
+        const code = document.getElementById('code').value;
+        const res = await fetch('/api/auth/verify-code/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, code })
+        });
+
+        if (res.ok) {
+            const data = await res.json();
+            localStorage.setItem('access_token', data.access); // JWT
+            window.location.href = "/dashboard/";
+        } else {
+            document.getElementById('message').textContent = "Неправильний код, спробуйте знову.";
+        }
+    }
+</script>
+</body>
+</html>

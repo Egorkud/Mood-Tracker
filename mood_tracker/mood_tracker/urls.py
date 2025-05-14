@@ -18,6 +18,7 @@ from django.contrib import admin
 from django.urls import path, include
 
 urlpatterns = [
+    path('', include('mood.urls')),
     path('admin/', admin.site.urls),
     path('api/', include('mood.urls')),  # Додаємо наші API маршрути
 ]

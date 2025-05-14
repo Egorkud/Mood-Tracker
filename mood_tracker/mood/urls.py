@@ -1,6 +1,7 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 
+from . import views
 from .views import MoodEntryViewSet
 from .views import RequestCodeView, VerifyCodeView
 
@@ -9,6 +10,7 @@ router.register(r'mood', MoodEntryViewSet, basename='mood')
 
 urlpatterns = [
     path('', include(router.urls)),
+    path('login', views.login_page, name='login'),
 ]
 
 urlpatterns += [
