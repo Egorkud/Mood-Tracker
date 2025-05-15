@@ -2,8 +2,7 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 
 from . import views
-from .views import MoodEntryViewSet
-from .views import RequestCodeView, VerifyCodeView, CreateMoodEntryView, UserInfoView
+from .views import RequestCodeView, VerifyCodeView, CreateMoodEntryView, UserInfoView, MoodEntryViewSet
 
 router = DefaultRouter()
 router.register(r'mood', MoodEntryViewSet, basename='mood')
@@ -14,6 +13,7 @@ urlpatterns = [
     path('dashboard/', views.dashboard_view, name='dashboard'),
     path('api/mood/create/', CreateMoodEntryView.as_view(), name='create_mood'),
     path('api/user-info/', UserInfoView.as_view(), name='user_info'),
+    path("api/mood/week/", views.weekly_mood),
 
 ]
 

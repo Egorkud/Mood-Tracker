@@ -1,19 +1,17 @@
 import random
+from datetime import timedelta, date
 
 from django.contrib.auth.models import User
 from django.shortcuts import render
-from rest_framework import generics
-from rest_framework import status
-from rest_framework import viewsets, permissions
+from rest_framework import viewsets, permissions, status, generics
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from .models import EmailVerificationCode
-from .models import MoodEntry
-from .serializers import EmailRequestSerializer, CodeVerificationSerializer
-from .serializers import MoodEntrySerializer
+from .models import EmailVerificationCode, MoodEntry
+from .serializers import EmailRequestSerializer, CodeVerificationSerializer, MoodEntrySerializer
 
 
 # Create your views here.
@@ -25,6 +23,17 @@ def dashboard_view(request):
     return render(request, 'mood/dashboard.html', {
         'user': request.user.username,
     })
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def weekly_mood(request):
+    today = date.today()
+    week_ago = today - timedelta(days=6)  # 7 днів включно
+    entries = MoodEntry.objects.filter(user=request.user, date__range=(week_ago, today)).order_by('date')
+    data = [{"date": e.date.strftime("%d-%m"), "mood": e.mood} for e in entries]
+    return Response(data)
+
 
 class UserInfoView(APIView):
     permission_classes = [IsAuthenticated]
@@ -53,6 +62,7 @@ class CreateMoodEntryView(APIView):
         )
 
         return Response({'status': 'ok'})
+
 
 class MoodEntryViewSet(viewsets.ModelViewSet):
     serializer_class = MoodEntrySerializer
