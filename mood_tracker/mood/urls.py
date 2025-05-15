@@ -3,7 +3,7 @@ from rest_framework.routers import DefaultRouter
 
 from . import views
 from .views import MoodEntryViewSet
-from .views import RequestCodeView, VerifyCodeView
+from .views import RequestCodeView, VerifyCodeView, CreateMoodEntryView, UserInfoView
 
 router = DefaultRouter()
 router.register(r'mood', MoodEntryViewSet, basename='mood')
@@ -12,7 +12,9 @@ urlpatterns = [
     path('', include(router.urls)),
     path('login', views.login_page, name='login'),
     path('dashboard/', views.dashboard_view, name='dashboard'),
-    path('dashboard/create-entry/', views.create_mood_entry, name='create-entry'),
+    path('api/mood/create/', CreateMoodEntryView.as_view(), name='create_mood'),
+    path('api/user-info/', UserInfoView.as_view(), name='user_info'),
+
 ]
 
 urlpatterns += [

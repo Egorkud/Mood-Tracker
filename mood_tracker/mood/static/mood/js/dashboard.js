@@ -39,14 +39,15 @@ document.addEventListener("DOMContentLoaded", () => {
             return cookieValue;
         }
 
-        const response = await fetch("/dashboard/create-entry/", {
+        const token = localStorage.getItem('access_token');
+        const response = await fetch("/api/mood/create/", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "X-CSRFToken": getCookie('csrftoken') // CSRF токен!
+                "Authorization": `Bearer ${token}`
             },
             body: JSON.stringify({ mood: emotion, note: message, date })
-            });
+        });
 
 
         if (response.ok) {
@@ -56,5 +57,19 @@ document.addEventListener("DOMContentLoaded", () => {
         } else {
             alert("Помилка при збереженні запису.");
         }
+
+        async function getUsername() {
+            const token = localStorage.getItem("access_token");
+            const res = await fetch("/api/user-info/", {
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            });
+                if (res.ok) {
+                    const data = await res.json();
+                    document.getElementById("username-display").textContent = data.username;
+                }
+            }
+        getUsername();
     });
 });

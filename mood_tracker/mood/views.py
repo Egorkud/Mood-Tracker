@@ -1,14 +1,13 @@
-import json
 import random
 
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.http import JsonResponse
 from django.shortcuts import render
-from django.views.decorators.http import require_POST
 from rest_framework import generics
+from rest_framework import status
 from rest_framework import viewsets, permissions
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from .models import EmailVerificationCode
@@ -21,32 +20,40 @@ from .serializers import MoodEntrySerializer
 def login_page(request):
     return render(request, 'mood/login.html')
 
-@login_required
+
 def dashboard_view(request):
+    print(request.user.username)
     return render(request, 'mood/dashboard.html', {
-        "username": request.user.username,
+        'user': request.user,
     })
 
-@require_POST
-@login_required
-def create_mood_entry(request):
-    data = json.loads(request.body)
-    print("[DEBUG DATA]:", data)
-    mood = data.get('mood')
-    note = data.get('note')
-    date = data.get('date')
+class UserInfoView(APIView):
+    permission_classes = [IsAuthenticated]
 
-    if not mood or not date:
-        return JsonResponse({'error': 'Missing data'}, status=400)
+    def get(self, request):
+        return Response({"username": request.user.username})
 
-    MoodEntry.objects.create(
-        user=request.user,
-        mood=mood,
-        note=note,
-        date=date
-    )
 
-    return JsonResponse({'status': 'ok'})
+class CreateMoodEntryView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        data = request.data
+        mood = data.get('mood')
+        note = data.get('note')
+        date = data.get('date')
+
+        if not mood or not date:
+            return Response({'error': 'Missing data'}, status=status.HTTP_400_BAD_REQUEST)
+
+        MoodEntry.objects.create(
+            user=request.user,
+            mood=mood,
+            note=note,
+            date=date
+        )
+
+        return Response({'status': 'ok'})
 
 class MoodEntryViewSet(viewsets.ModelViewSet):
     serializer_class = MoodEntrySerializer
@@ -58,6 +65,7 @@ class MoodEntryViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         # Автоматично прив'язуємо запис до користувача
+        print("[DEBUG] Current user:", self.request.user)
         serializer.save(user=self.request.user)
 
 
