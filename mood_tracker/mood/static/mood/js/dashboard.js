@@ -12,6 +12,20 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
+        async function getUsername() {
+            const token = localStorage.getItem("access_token");
+            const res = await fetch("/api/user-info/", {
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            });
+                if (res.ok) {
+                    const data = await res.json();
+                    document.getElementById("username-display").textContent = data.username;
+                }
+        }
+        getUsername();
+
     // Відправка форми
     form.addEventListener("submit", async (e) => {
         e.preventDefault();
@@ -57,19 +71,5 @@ document.addEventListener("DOMContentLoaded", () => {
         } else {
             alert("Помилка при збереженні запису.");
         }
-
-        async function getUsername() {
-            const token = localStorage.getItem("access_token");
-            const res = await fetch("/api/user-info/", {
-                headers: {
-                    "Authorization": `Bearer ${token}`
-                }
-            });
-                if (res.ok) {
-                    const data = await res.json();
-                    document.getElementById("username-display").textContent = data.username;
-                }
-            }
-        getUsername();
     });
 });

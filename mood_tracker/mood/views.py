@@ -22,9 +22,8 @@ def login_page(request):
 
 
 def dashboard_view(request):
-    print(request.user.username)
     return render(request, 'mood/dashboard.html', {
-        'user': request.user,
+        'user': request.user.username,
     })
 
 class UserInfoView(APIView):
