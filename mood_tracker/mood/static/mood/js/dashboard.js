@@ -70,9 +70,9 @@ document.addEventListener("DOMContentLoaded", () => {
                     return 4;
                 case "neutral":
                     return 3;
-                case "sad":
-                    return 2;
                 case "anxious":
+                    return 2;
+                case "sad":
                     return 1
                 case "angry":
                     return 0;
@@ -104,8 +104,8 @@ document.addEventListener("DOMContentLoaded", () => {
                                 if (value === 5) return 'Задоволений';
                                 if (value === 4) return 'Щасливий';
                                 if (value === 3) return 'Нейтральний';
-                                if (value === 2) return 'Сумний';
-                                if (value === 1) return 'Тривожний';
+                                if (value === 2) return 'Тривожний';
+                                if (value === 1) return 'Сумний';
                                 if (value === 0) return 'Злий';
                                 return '';
                             },
