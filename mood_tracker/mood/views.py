@@ -1,8 +1,11 @@
+import json
 import random
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.http import JsonResponse
 from django.shortcuts import render
+from django.views.decorators.http import require_POST
 from rest_framework import generics
 from rest_framework import viewsets, permissions
 from rest_framework.response import Response
@@ -20,8 +23,30 @@ def login_page(request):
 
 @login_required
 def dashboard_view(request):
-    return render(request, 'mood/dashboard.html')
+    return render(request, 'mood/dashboard.html', {
+        "username": request.user.username,
+    })
 
+@require_POST
+@login_required
+def create_mood_entry(request):
+    data = json.loads(request.body)
+    print("[DEBUG DATA]:", data)
+    mood = data.get('mood')
+    note = data.get('note')
+    date = data.get('date')
+
+    if not mood or not date:
+        return JsonResponse({'error': 'Missing data'}, status=400)
+
+    MoodEntry.objects.create(
+        user=request.user,
+        mood=mood,
+        note=note,
+        date=date
+    )
+
+    return JsonResponse({'status': 'ok'})
 
 class MoodEntryViewSet(viewsets.ModelViewSet):
     serializer_class = MoodEntrySerializer

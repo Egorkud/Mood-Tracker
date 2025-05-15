@@ -12,6 +12,7 @@ urlpatterns = [
     path('', include(router.urls)),
     path('login', views.login_page, name='login'),
     path('dashboard/', views.dashboard_view, name='dashboard'),
+    path('dashboard/create-entry/', views.create_mood_entry, name='create-entry'),
 ]
 
 urlpatterns += [
