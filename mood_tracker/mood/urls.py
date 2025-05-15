@@ -11,6 +11,7 @@ router.register(r'mood', MoodEntryViewSet, basename='mood')
 urlpatterns = [
     path('', include(router.urls)),
     path('login', views.login_page, name='login'),
+    path('dashboard/', views.dashboard_view, name='dashboard'),
 ]
 
 urlpatterns += [

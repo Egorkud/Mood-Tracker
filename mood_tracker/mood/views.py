@@ -1,5 +1,6 @@
 import random
 
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.shortcuts import render
 from rest_framework import generics
@@ -16,6 +17,11 @@ from .serializers import MoodEntrySerializer
 # Create your views here.
 def login_page(request):
     return render(request, 'mood/login.html')
+
+@login_required
+def dashboard_view(request):
+    return render(request, 'mood/dashboard.html')
+
 
 class MoodEntryViewSet(viewsets.ModelViewSet):
     serializer_class = MoodEntrySerializer
