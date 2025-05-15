@@ -9,7 +9,10 @@
 </head>
 <body>
 <div class="container py-5">
-    <h2 class="mb-4 text-center">Привіт, <span id="username-display"></span></h2>
+    <nav class="navbar bg-light p-2">
+        <span class="me-auto">Привіт, <strong id="username-display"></strong>!</span>
+        <button id="logout-btn" class="btn btn-outline-danger btn-sm">Вийти</button>
+    </nav>
 
     <!-- Mood Form -->
     <div class="card mb-5">
@@ -19,12 +22,18 @@
                 <div class="mb-3">
                     <label class="form-label">Ваш настрій:</label>
                     <div id="emotion-picker" class="d-flex flex-wrap gap-2">
-                        <button type="button" class="btn btn-outline-secondary emotion-btn" data-emotion="happy">😊</button>
-                        <button type="button" class="btn btn-outline-secondary emotion-btn" data-emotion="sad">😢</button>
-                        <button type="button" class="btn btn-outline-secondary emotion-btn" data-emotion="angry">😠</button>
-                        <button type="button" class="btn btn-outline-secondary emotion-btn" data-emotion="neutral">😐</button>
-                        <button type="button" class="btn btn-outline-secondary emotion-btn" data-emotion="excited">🤩</button>
-                        <button type="button" class="btn btn-outline-secondary emotion-btn" data-emotion="anxious">😟</button>
+                        <button type="button" class="btn btn-outline-secondary emotion-btn" data-emotion="happy">😊
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary emotion-btn" data-emotion="sad">😢
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary emotion-btn" data-emotion="angry">😠
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary emotion-btn" data-emotion="neutral">😐
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary emotion-btn" data-emotion="excited">🤩
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary emotion-btn" data-emotion="anxious">😟
+                        </button>
                     </div>
                     <input type="hidden" id="emotion" name="emotion">
                 </div>

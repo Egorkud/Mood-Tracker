@@ -3,6 +3,18 @@ document.addEventListener("DOMContentLoaded", () => {
     const emotionButtons = document.querySelectorAll(".emotion-btn");
     const emotionInput = document.getElementById("emotion");
 
+
+    // Обробка кнопки "Вихід"
+    const logoutBtn = document.getElementById("logout-btn");
+    logoutBtn.addEventListener("click", () => {
+        // Видаляємо токени з localStorage
+        localStorage.removeItem("access_token");
+        localStorage.removeItem("refresh_token");
+
+        // Перенаправляємо на сторінку логіну
+        window.location.href = "/login";
+    });
+
     // Функція перевірки токена
     async function checkTokenValidity() {
         const token = localStorage.getItem("access_token");
