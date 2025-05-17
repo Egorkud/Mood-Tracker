@@ -25,6 +25,20 @@ def dashboard_view(request):
     })
 
 
+@api_view(['POST'])
+def telegram_login(request):
+    email = request.data.get('email')
+    try:
+        user = User.objects.get(email=email)
+        refresh = RefreshToken.for_user(user)
+        return Response({
+            "access": str(refresh.access_token),
+            "username": user.username,
+        })
+    except User.DoesNotExist:
+        return Response({"error": "Користувача не знайдено"}, status=status.HTTP_404_NOT_FOUND)
+
+
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def weekly_mood(request):

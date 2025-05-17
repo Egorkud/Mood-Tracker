@@ -14,7 +14,7 @@ urlpatterns = [
     path('api/mood/create/', CreateMoodEntryView.as_view(), name='create_mood'),
     path('api/user-info/', UserInfoView.as_view(), name='user_info'),
     path("api/mood/week/", views.weekly_mood),
-
+    path("api/telegram/login/", views.telegram_login),
 ]
 
 urlpatterns += [
