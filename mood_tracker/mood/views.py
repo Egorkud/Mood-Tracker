@@ -1,8 +1,10 @@
 import random
-from datetime import timedelta, date
+from collections import Counter
+from datetime import date, timedelta
 
 from django.contrib.auth.models import User
 from django.shortcuts import render
+from django.utils.timezone import now
 from rest_framework import viewsets, permissions, status, generics
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
@@ -23,6 +25,48 @@ def dashboard_view(request):
     return render(request, 'mood/dashboard.html', {
         'user': request.user.username,
     })
+
+
+class WeeklyStatsView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        today = now().date()
+        week_ago = today - timedelta(days=7)
+
+        entries = MoodEntry.objects.filter(user=request.user, date__gte=week_ago)
+
+        mood_counts = Counter(entry.mood for entry in entries)
+        total_entries = len(entries)
+
+        mood_to_score = {
+            "😄": 5,
+            "🙂": 4,
+            "😐": 3,
+            "☹️": 2,
+            "😢": 1,
+            "❓": 0
+        }
+
+        mood_scores = [mood_to_score.get(entry.mood, 3) for entry in entries]
+        average_mood = round(sum(mood_scores) / total_entries, 1) if total_entries else 0
+
+        most_common_emotion = mood_counts.most_common(1)[0][0] if total_entries else "Немає даних"
+        emoji = ""
+        for key, value in mood_to_score.items():
+            if value == average_mood:
+                emoji = key
+                break
+
+        return Response({
+            "from": str(week_ago),
+            "to": str(today),
+            "entries_count": total_entries,
+            "mood_counts": mood_counts,
+            "average_mood": average_mood,
+            "most_common_emotion": most_common_emotion,
+            "emotion_image": emoji
+        })
 
 
 @api_view(['POST'])

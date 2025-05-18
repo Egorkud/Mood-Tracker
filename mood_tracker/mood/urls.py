@@ -2,7 +2,7 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 
 from . import views
-from .views import RequestCodeView, VerifyCodeView, CreateMoodEntryView, UserInfoView, MoodEntryViewSet
+from .views import RequestCodeView, VerifyCodeView, CreateMoodEntryView, UserInfoView, MoodEntryViewSet, WeeklyStatsView
 
 router = DefaultRouter()
 router.register(r'mood', MoodEntryViewSet, basename='mood')
@@ -15,6 +15,7 @@ urlpatterns = [
     path('api/user-info/', UserInfoView.as_view(), name='user_info'),
     path("api/mood/week/", views.weekly_mood),
     path("api/telegram/login/", views.telegram_login),
+    path('api/mood/stats/weekly/', WeeklyStatsView.as_view()),
 ]
 
 urlpatterns += [
